@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدروس | DZ LAW HUB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Cairo', 'sans-serif'] },
+            colors: {
+              primary: '#4338ca', 
+              secondary: '#1e293b',
+              surface: '#f8fafc',
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-surface text-secondary font-sans">
+
+    <!-- Navbar (Same as Index) -->
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-18 py-3">
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <div class="bg-gradient-to-br from-primary to-indigo-500 text-white p-2 rounded-xl">
+                        <i data-lucide="scale" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-black tracking-tight text-slate-800">DZ LAW HUB</span>
+                </a>
+                <div class="hidden md:flex items-center bg-slate-100 p-1 rounded-2xl mx-4">
+                    <a href="index.html" class="px-4 py-2 rounded-xl text-sm font-bold text-slate-500 hover:text-primary">الرئيسية</a>
+                    <a href="lessons.html" class="px-4 py-2 rounded-xl text-sm font-bold text-primary bg-white shadow-sm">الدروس</a>
+                    <a href="pricing.html" class="px-4 py-2 rounded-xl text-sm font-bold text-slate-500 hover:text-primary">الاشتراكات</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="min-h-screen pb-20">
+        <div class="bg-white border-b border-slate-200 pt-12 pb-8 px-4">
+            <div class="container mx-auto text-center">
+                <h1 class="text-3xl font-black text-slate-900 mb-2">المكتبة القانونية</h1>
+                <p class="text-slate-500 mb-8">اختر السنة الدراسية لعرض المقاييس المقررة</p>
+                
+                <!-- Tabs -->
+                <div class="bg-slate-100 p-1.5 rounded-xl inline-flex">
+                    <button onclick="switchYear(1)" id="tab-1" class="tab-btn px-8 py-2.5 rounded-lg text-sm font-bold transition-all bg-white text-primary shadow-sm">السنة الأولى</button>
+                    <button onclick="switchYear(2)" id="tab-2" class="tab-btn px-8 py-2.5 rounded-lg text-sm font-bold transition-all text-slate-500 hover:text-slate-700">السنة الثانية</button>
+                    <button onclick="switchYear(3)" id="tab-3" class="tab-btn px-8 py-2.5 rounded-lg text-sm font-bold transition-all text-slate-500 hover:text-slate-700">السنة الثالثة</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 mt-12 max-w-4xl">
+            <!-- Year 1 Content -->
+            <div id="content-1" class="space-y-6 lesson-group">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-6 hover:shadow-md transition">
+                    <div class="w-full md:w-40 bg-slate-50 rounded-xl flex flex-col items-center justify-center p-4 text-center">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm mb-2 text-primary"><i data-lucide="book"></i></div>
+                        <span class="text-sm font-bold text-slate-700">مدخل للقانون</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">نظرية القانون والحق</h3>
+                        <p class="text-slate-500 leading-relaxed mb-4 text-sm">مفهوم القانون، خصائص القاعدة القانونية، وعلاقتها بالعلوم الاجتماعية. تقسيمات القانون العام والخاص.</p>
+                        <div class="flex gap-2">
+                            <button class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light transition">
+                                <i data-lucide="play-circle" class="w-3 h-3"></i> عرض الدرس
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- More lessons can be added here -->
+            </div>
+
+            <!-- Year 2 Content (Hidden by default) -->
+            <div id="content-2" class="space-y-6 lesson-group hidden">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-6 hover:shadow-md transition">
+                    <div class="w-full md:w-40 bg-slate-50 rounded-xl flex flex-col items-center justify-center p-4 text-center">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm mb-2 text-primary"><i data-lucide="gavel"></i></div>
+                        <span class="text-sm font-bold text-slate-700">القانون المدني</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">مصادر الالتزام</h3>
+                        <p class="text-slate-500 leading-relaxed mb-4 text-sm">مصادر الالتزام الإرادية (العقد، الإرادة المنفردة) وغير الإرادية (العمل المستحق للتعويض).</p>
+                        <button class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light transition">
+                            <i data-lucide="play-circle" class="w-3 h-3"></i> عرض الدرس
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Year 3 Content (Hidden by default) -->
+            <div id="content-3" class="space-y-6 lesson-group hidden">
+                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-6 hover:shadow-md transition">
+                    <div class="w-full md:w-40 bg-slate-50 rounded-xl flex flex-col items-center justify-center p-4 text-center">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm mb-2 text-primary"><i data-lucide="briefcase"></i></div>
+                        <span class="text-sm font-bold text-slate-700">القانون التجاري</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">الشركات التجارية</h3>
+                        <p class="text-slate-500 leading-relaxed mb-4 text-sm">النظرية العامة للشركات، شركات الأشخاص، وشركات الأموال في التشريع الجزائري.</p>
+                        <button class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-light transition">
+                            <i data-lucide="play-circle" class="w-3 h-3"></i> عرض الدرس
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function switchYear(year) {
+            // Hide all content
+            document.querySelectorAll('.lesson-group').forEach(el => el.classList.add('hidden'));
+            // Show selected content
+            document.getElementById(`content-${year}`).classList.remove('hidden');
+
+            // Reset tabs styling
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-primary', 'shadow-sm');
+                btn.classList.add('text-slate-500');
+            });
+            // Highlight selected tab
+            const activeBtn = document.getElementById(`tab-${year}`);
+            activeBtn.classList.add('bg-white', 'text-primary', 'shadow-sm');
+            activeBtn.classList.remove('text-slate-500');
+        }
+    </script>
+</body>
+</html>

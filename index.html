@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" style="font-size: 14px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DZ LAW HUB | منصة الطالب القانوني</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Cairo', 'sans-serif'] },
+            colors: {
+              primary: '#4338ca', 
+              'primary-light': '#6366f1',
+              secondary: '#1e293b',
+              surface: '#f8fafc',
+              accent: '#0ea5e9',
+            },
+            animation: {
+              'fade-in-up': 'fadeInUp 0.5s ease-out',
+              'pop': 'pop 0.3s ease-out',
+              'shake': 'shake 0.4s ease-in-out',
+              'slide-in-right': 'slideInRight 0.5s ease-out',
+              'slide-in-left': 'slideInLeft 0.5s ease-out',
+            },
+            keyframes: {
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              slideInRight: {
+                '0%': { opacity: '0', transform: 'translateX(20px)' },
+                '100%': { opacity: '1', transform: 'translateX(0)' },
+              },
+              slideInLeft: {
+                '0%': { opacity: '0', transform: 'translateX(-20px)' },
+                '100%': { opacity: '1', transform: 'translateX(0)' },
+              },
+              pop: {
+                  '0%': { transform: 'scale(0.8)', opacity: '0' },
+                  '100%': { transform: 'scale(1)', opacity: '1' }
+              },
+              shake: {
+                  '0%, 100%': { transform: 'translateX(0)' },
+                  '25%': { transform: 'translateX(-5px)' },
+                  '75%': { transform: 'translateX(5px)' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Custom Scrollbar */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 20px;
+      }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #334155;
+      }
+    </style>
+    
+    <!-- Import Map -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+        "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.10.1",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.32.0",
+        "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+        "react/": "https://aistudiocdn.com/react@^19.2.1/",
+        "react": "https://aistudiocdn.com/react@^19.2.1",
+        "ogl": "https://aistudiocdn.com/ogl@^1.0.11"
+      }
+    }
+    </script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-surface text-secondary font-sans antialiased">
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

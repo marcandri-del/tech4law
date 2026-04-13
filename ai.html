@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المساعد الذكي | DZ LAW HUB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Cairo', 'sans-serif'] },
+            colors: {
+              primary: '#4338ca', 
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-slate-50 h-screen flex flex-col font-sans overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 p-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="bg-slate-100 p-2 rounded-lg hover:bg-slate-200 transition"><i data-lucide="arrow-right"></i></a>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-primary to-purple-500 rounded-full flex items-center justify-center shadow-md">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-slate-800">المرافق الدراسي</h2>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-xs text-slate-500 font-medium">متصل الآن</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Chat Area -->
+    <main class="flex-1 overflow-y-auto p-6 space-y-6 container mx-auto max-w-3xl">
+        
+        <!-- Bot Message -->
+        <div class="flex justify-start">
+            <div class="flex gap-3 max-w-[85%]">
+                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                    <i data-lucide="bot" class="w-4 h-4"></i>
+                </div>
+                <div class="bg-white p-4 rounded-2xl rounded-tr-none border border-slate-200 shadow-sm text-slate-700 text-sm leading-relaxed">
+                    مرحباً يا بطل! 🎓<br>
+                    أنا رفيقك الدراسي الذكي. اسألني عن أي غموض في دروسك، أو اطلب مني أمثلة توضيحية، وسأساعدك فوراً.
+                </div>
+            </div>
+        </div>
+
+        <!-- User Message Example -->
+        <div class="flex justify-end">
+            <div class="flex flex-row-reverse gap-3 max-w-[85%]">
+                <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center flex-shrink-0 mt-1">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+                <div class="bg-primary text-white p-4 rounded-2xl rounded-tl-none shadow-sm text-sm leading-relaxed">
+                    ما الفرق بين البطلان المطلق والبطلان النسبي في القانون المدني؟
+                </div>
+            </div>
+        </div>
+
+         <!-- Bot Response Example -->
+         <div class="flex justify-start">
+            <div class="flex gap-3 max-w-[85%]">
+                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                    <i data-lucide="bot" class="w-4 h-4"></i>
+                </div>
+                <div class="bg-white p-4 rounded-2xl rounded-tr-none border border-slate-200 shadow-sm text-slate-700 text-sm leading-relaxed">
+                    <strong>الفرق الجوهري يكمن في نوع المصلحة المحمية:</strong><br><br>
+                    1. <strong>البطلان المطلق:</strong> يتقرر عندما يختل ركن من أركان العقد (الرضا، المحل، السبب، الشكلية) أو إذا كان العقد مخالفاً للنظام العام. <br>
+                    - يجوز لكل ذي مصلحة التمسك به.<br>
+                    - تحكم به المحكمة من تلقاء نفسها.<br>
+                    - لا يزول بالإجازة.<br><br>
+                    2. <strong>البطلان النسبي:</strong> يتقرر عند نقص الأهلية أو وجود عيب في الإرادة (غلط، تدليس، إكراه، استغلال).<br>
+                    - لا يتمسك به إلا من شرع لمصلحته (ناقص الأهلية أو ضحية العيب).<br>
+                    - يزول بالإجازة الصريحة أو الضمنية.
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Input Area -->
+    <div class="bg-white border-t border-slate-200 p-4">
+        <div class="container mx-auto max-w-3xl">
+            <div class="relative flex items-center gap-2">
+                <button class="p-3 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-xl transition">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                </button>
+                <input type="text" placeholder="اكتب سؤالك هنا..." class="flex-1 bg-slate-100 border-0 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-slate-800 placeholder:text-slate-400">
+                <button class="bg-primary hover:bg-primary-light text-white p-3 rounded-xl transition shadow-lg shadow-primary/20">
+                    <i data-lucide="send" class="w-5 h-5 rtl:rotate-180"></i>
+                </button>
+            </div>
+            <p class="text-center text-[10px] text-slate-400 mt-2">المعلومات للأغراض التعليمية فقط.</p>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
