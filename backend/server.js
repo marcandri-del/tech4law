@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 
 // ✅ Main proxy endpoint - key never leaves the server
 app.post('/api/chat', async (req, res) => {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'GEMINI_API_KEY not set on server' });
   }
