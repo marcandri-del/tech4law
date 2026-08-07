@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DZ LAW HUB | منصة الطالب القانوني</title>
+    <title>DZLAW HUB | منصة الطالب القانوني</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,7 @@
               primary: '#4338ca', 
               'primary-light': '#6366f1',
               secondary: '#1e293b',
-              surface: '#f8fafc',
+              surface: '#f4f6f9',
               accent: '#0ea5e9',
             },
             animation: {
@@ -48,18 +48,30 @@
                 '100%': { opacity: '1', transform: 'translateX(0)' },
               },
               pop: {
-                  '0%': { transform: 'scale(0.8)', opacity: '0' },
-                  '100%': { transform: 'scale(1)', opacity: '1' }
+                '0%': { transform: 'scale(0.8)', opacity: '0' },
+                '100%': { transform: 'scale(1)', opacity: '1' }
               },
               shake: {
-                  '0%, 100%': { transform: 'translateX(0)' },
-                  '25%': { transform: 'translateX(-5px)' },
-                  '75%': { transform: 'translateX(5px)' }
+                '0%, 100%': { transform: 'translateX(0)' },
+                '25%': { transform: 'translateX(-5px)' },
+                '75%': { transform: 'translateX(5px)' }
               }
             }
           }
         }
       }
+    </script>
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem('theme');
+          if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
     </script>
     <style>
       /* Custom Scrollbar */
@@ -95,7 +107,7 @@
     </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body class="bg-surface text-secondary font-sans antialiased">
+<body class="bg-surface dark:bg-slate-950 text-secondary dark:text-slate-100 font-sans antialiased">
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
 <script type="module" src="/index.tsx"></script>

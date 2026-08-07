@@ -2,6 +2,10 @@
 export interface Lesson {
   id: string;
   year: 1 | 2 | 3;
+  semester?: 1 | 2;
+  unit?: string;
+  coefficient?: number;
+  credits?: number;
   title: string;
   summary: string;
   keyPoints: string[];
@@ -14,6 +18,9 @@ export interface Flashcard {
   term: string;
   definition: string;
   lawReference: string;
+  year?: 1 | 2 | 3;
+  module?: string;
+  semester?: 1 | 2;
 }
 
 export interface QuizQuestion {
@@ -28,6 +35,7 @@ export interface QuizCategory {
   id: string;
   name: string;
   questions: QuizQuestion[];
+  year?: 1 | 2 | 3;
 }
 
 export interface ResearchTopic {
@@ -52,4 +60,39 @@ export interface DailyTip {
   title: string;
   content: string;
   reference?: string;
+}
+
+export interface QuizItem {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+}
+
+export interface CourseChapter {
+  id: string;
+  chapterNumber: number;
+  title: string;
+  duration: string;
+  summary: string;
+  detailedContent: string;
+  keyPoints: string[];
+  legalArticles?: string[];
+  examples: string[];
+  quiz?: {
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+  };
+  quizzes?: QuizItem[];
+}
+
+export interface CourseSyllabus {
+  courseId: string;
+  courseTitle: string;
+  professor: string;
+  university: string;
+  totalChapters: number;
+  chapters: CourseChapter[];
 }

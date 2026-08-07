@@ -1,143 +1,189 @@
-import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import { Award, TrendingUp, BookOpen, CheckCircle, Zap } from 'lucide-react';
-import { LESSONS, QUIZ_CATEGORIES, FLASHCARDS } from '../constants';
-
-// --- DATA CALCULATION ---
-const totalLessons = LESSONS.length;
-const totalQuizzes = QUIZ_CATEGORIES.reduce((acc, cat) => acc + cat.questions.length, 0);
-const totalFlashcards = FLASHCARDS.length;
-
-// Distribution by Subject (Derived from Lessons titles/categories roughly)
-const subjectsCount = {
-    'مدني': LESSONS.filter(l => l.title.includes('مدني') || l.title.includes('التزامات') || l.title.includes('عقود')).length,
-    'جنائي': LESSONS.filter(l => l.title.includes('جنائي') || l.title.includes('عقوبات')).length,
-    'إداري': LESSONS.filter(l => l.title.includes('إداري') || l.title.includes('دستوري')).length,
-    'تجاري': LESSONS.filter(l => l.title.includes('تجاري') || l.title.includes('أعمال')).length,
-    'أسرة': LESSONS.filter(l => l.title.includes('أسرة')).length,
-};
-
-const dataProgress = [
-  { name: 'مدني', value: subjectsCount['مدني'] },
-  { name: 'إداري', value: subjectsCount['إداري'] },
-  { name: 'جنائي', value: subjectsCount['جنائي'] },
-  { name: 'تجاري', value: subjectsCount['تجاري'] },
-].filter(item => item.value > 0);
-
-// Weekly Activity (Simulated for Demo - as we don't have user history backend)
-const dataActivity = [
-    { name: 'السبت', lessons: 2, quizzes: 5 },
-    { name: 'الأحد', lessons: 4, quizzes: 3 },
-    { name: 'الاثنين', lessons: 1, quizzes: 8 },
-    { name: 'الثلاثاء', lessons: 5, quizzes: 2 },
-    { name: 'الأربعاء', lessons: 3, quizzes: 6 },
-    { name: 'الخميس', lessons: 6, quizzes: 4 },
-    { name: 'الجمعة', lessons: 1, quizzes: 1 },
-];
-
-const COLORS = ['#4338ca', '#0ea5e9', '#f59e0b', '#10b981'];
+import React, { useState, useEffect } from 'react';
+import { BookOpen, CheckCircle, Bookmark, BarChart2, GraduationCap, ArrowRight, Sparkles, Target, Clock } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { loadTracking } from '../lib/trackingService';
+import { LESSONS } from '../constants';
+import { AcademicCalendar } from '../src/components/AcademicCalendar';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const userYear = (Number(user?.studyYear) || 1) as 1 | 2 | 3;
+
+  const [tracking, setTracking] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user?.uid) return;
+    loadTracking(user.uid).then((data) => {
+      setTracking(data);
+      setLoading(false);
+    });
+  }, [user?.uid]);
+
+  // Real stats from Firestore
+  const completedLessonsCount = tracking
+    ? Object.keys(tracking.completedChapters || {}).length
+    : 0;
+
+  const totalChaptersCompleted = tracking
+    ? Object.values(tracking.completedChapters || {}).reduce(
+        (acc: number, arr: any) => acc + arr.length, 0
+      )
+    : 0;
+
+  const bookmarkedCount = tracking
+    ? (tracking.bookmarkedLessons || []).length
+    : 0;
+
+  const quizScoresArr = tracking
+    ? (Object.values(tracking.quizScores || {}) as { score: number; total: number; date: string }[])
+    : [];
+
+  const avgQuizScore =
+    quizScoresArr.length > 0
+      ? Math.round(
+          quizScoresArr.reduce((a, q) => a + (q.score / q.total) * 100, 0) /
+            quizScoresArr.length
+        )
+      : 0;
+
+  const totalLessonsForYear = LESSONS.filter(l => l.year === userYear).length;
+
+  const progressPercent =
+    totalLessonsForYear > 0
+      ? Math.min(100, Math.round((completedLessonsCount / totalLessonsForYear) * 100))
+      : 0;
+
+  const firstName = user?.name?.split(' ')[0] || 'الطالب';
+
+  const yearLabel = userYear === 1 ? 'L1' : userYear === 2 ? 'L2' : 'L3';
+
+  const quickLinks = [
+    { label: 'المحاضرات', icon: <BookOpen className="w-5 h-5" />, path: '/lessons', color: 'bg-indigo-500' },
+    { label: 'الاختبارات', icon: <Target className="w-5 h-5" />, path: '/quizzes', color: 'bg-emerald-500' },
+    { label: 'البطاقات', icon: <Sparkles className="w-5 h-5" />, path: '/flashcards', color: 'bg-amber-500' },
+    { label: 'البحث', icon: <BarChart2 className="w-5 h-5" />, path: '/research', color: 'bg-rose-500' },
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-           <h1 className="text-3xl font-black text-slate-900 dark:text-white">أهلاً، أيها الطالب المجتهد! 👋</h1>
-           <p className="text-slate-500 mt-1">إليك إحصائيات المحتوى المتوفر لك في المنصة.</p>
+    <div className="container mx-auto px-4 py-10 max-w-4xl">
+
+      {/* Welcome */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-1">
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white">
+            أهلاً، {firstName} 👋
+          </h1>
+          <span className="inline-flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 px-3 py-1 rounded-full text-sm font-bold border border-indigo-200 dark:border-indigo-700/50">
+            <GraduationCap className="w-4 h-4" />
+            {yearLabel}
+          </span>
         </div>
-        <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4 px-4">
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-300">
-                <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                <span>محتوى متجدد</span>
-            </div>
-        </div>
+        <p className="text-slate-500 dark:text-slate-400">
+          {loading ? 'جاري تحميل بياناتك...' : 'إليك ملخص تقدمك الدراسي.'}
+        </p>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-         <StatCard title="دروس متوفرة" value={totalLessons.toString()} icon={<BookOpen className="w-5 h-5 text-white"/>} color="bg-blue-500" />
-         <StatCard title="أسئلة اختبار" value={totalQuizzes.toString()} icon={<CheckCircle className="w-5 h-5 text-white"/>} color="bg-green-500" />
-         <StatCard title="مصطلح قانوني" value={totalFlashcards.toString()} icon={<Award className="w-5 h-5 text-white"/>} color="bg-yellow-500" />
-         <StatCard title="ساعات المحتوى" value={`${totalLessons * 2}h`} icon={<TrendingUp className="w-5 h-5 text-white"/>} color="bg-purple-500" />
+        <StatCard
+          loading={loading}
+          title="دروس مكتملة"
+          value={completedLessonsCount.toString()}
+          icon={<BookOpen className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />}
+          bg="bg-indigo-50 dark:bg-indigo-900/20"
+        />
+        <StatCard
+          loading={loading}
+          title="فصول مكتملة"
+          value={totalChaptersCompleted.toString()}
+          icon={<CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />}
+          bg="bg-emerald-50 dark:bg-emerald-900/20"
+        />
+        <StatCard
+          loading={loading}
+          title="دروس محفوظة"
+          value={bookmarkedCount.toString()}
+          icon={<Bookmark className="w-5 h-5 text-amber-600 dark:text-amber-400" />}
+          bg="bg-amber-50 dark:bg-amber-900/20"
+        />
+        <StatCard
+          loading={loading}
+          title="متوسط الاختبارات"
+          value={quizScoresArr.length > 0 ? `${avgQuizScore}%` : '—'}
+          icon={<Target className="w-5 h-5 text-rose-600 dark:text-rose-400" />}
+          bg="bg-rose-50 dark:bg-rose-900/20"
+        />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {/* Activity Chart */}
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 md:col-span-2">
-            <h3 className="font-bold mb-6 text-slate-800 dark:text-white flex items-center gap-2">
-                نشاط المنصة الأسبوعي
-            </h3>
-            <div className="h-72 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={dataActivity} barGap={8}>
-                        <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} dy={10} />
-                        <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
-                        <Tooltip 
-                            contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', border: 'none', color: '#fff', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }} 
-                            itemStyle={{ color: '#fff' }}
-                            cursor={{fill: '#f1f5f9'}}
-                        />
-                        <Legend iconType="circle" wrapperStyle={{paddingTop: '20px'}} />
-                        <Bar dataKey="lessons" name="دروس جديدة" fill="#4338ca" radius={[6, 6, 6, 6]} barSize={12} />
-                        <Bar dataKey="quizzes" name="تحديات" fill="#0ea5e9" radius={[6, 6, 6, 6]} barSize={12} />
-                    </BarChart>
-                </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Subject Distribution */}
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col">
-            <h3 className="font-bold mb-6 text-slate-800 dark:text-white">توزيع المحتوى حسب المادة</h3>
-            <div className="flex-1 min-h-[200px] w-full relative">
-                <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                        <Pie
-                            data={dataProgress}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            paddingAngle={5}
-                            dataKey="value"
-                            stroke="none"
-                        >
-                            {dataProgress.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                         <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderRadius: '8px', border: 'none', color: '#fff' }} itemStyle={{ color: '#fff' }} />
-                    </PieChart>
-                </ResponsiveContainer>
-                {/* Center text */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-3xl font-black text-slate-800 dark:text-white">{totalLessons}</span>
-                    <span className="text-xs text-slate-400">درس</span>
-                </div>
-            </div>
-            <div className="flex flex-wrap gap-2 justify-center mt-4">
-                {dataProgress.map((entry, index) => (
-                    <div key={index} className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded-lg">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                        {entry.name}
-                    </div>
-                ))}
-            </div>
-          </div>
+      {/* Progress Bar */}
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 mb-8 shadow-sm">
+        <div className="flex justify-between items-center mb-3">
+          <h3 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            <Clock className="w-4 h-4 text-indigo-500" />
+            تقدمك في {yearLabel}
+          </h3>
+          <span className="text-sm font-black text-indigo-600 dark:text-indigo-400">
+            {loading ? '...' : `${progressPercent}%`}
+          </span>
+        </div>
+        <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all duration-700"
+            style={{ width: loading ? '0%' : `${progressPercent}%` }}
+          />
+        </div>
+        <p className="text-xs text-slate-400 mt-2">
+          {loading ? '' : `${completedLessonsCount} من أصل ${totalLessonsForYear} درس`}
+        </p>
       </div>
+
+      {/* Quick Links */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {quickLinks.map((link) => (
+          <button
+            key={link.path}
+            onClick={() => navigate(link.path)}
+            className="flex flex-col items-center gap-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group"
+          >
+            <div className={`${link.color} w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg`}>
+              {link.icon}
+            </div>
+            <span className="text-sm font-bold text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+              {link.label}
+            </span>
+            <ArrowRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-indigo-500 transition-colors" />
+          </button>
+        ))}
+      </div>
+
+      {/* Academic Calendar */}
+      <AcademicCalendar />
+
     </div>
   );
 };
 
-const StatCard: React.FC<{title: string, value: string, icon: React.ReactNode, color: string}> = ({title, value, icon, color}) => (
-    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-        <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center shadow-lg shadow-gray-200 dark:shadow-none`}>
-            {icon}
-        </div>
-        <div>
-            <p className="text-xs text-slate-400 font-bold mb-1">{title}</p>
-            <h4 className="text-2xl font-black text-slate-800 dark:text-white">{value}</h4>
-        </div>
+const StatCard: React.FC<{
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+  bg: string;
+  loading?: boolean;
+}> = ({ title, value, icon, bg, loading }) => (
+  <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+    <div className={`w-10 h-10 ${bg} rounded-xl flex items-center justify-center mb-3`}>
+      {icon}
     </div>
+    <p className="text-xs text-slate-400 font-semibold mb-1">{title}</p>
+    {loading ? (
+      <div className="h-7 w-10 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
+    ) : (
+      <h4 className="text-2xl font-black text-slate-800 dark:text-white">{value}</h4>
+    )}
+  </div>
 );
 
 export default Dashboard;

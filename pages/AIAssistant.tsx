@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles, Trash2, StopCircle, ArrowUp, Eraser, Lightbulb, GraduationCap, Scale, Search } from 'lucide-react';
+import { Send, Bot, User, Sparkles, Trash2, StopCircle, ArrowUp, Paperclip, Lightbulb, GraduationCap, Scale, Search } from 'lucide-react';
 import { chatWithLegalAI } from '../services/geminiService';
 import { ChatMessage } from '../types';
 
@@ -127,7 +127,7 @@ const AIAssistant: React.FC = () => {
                 <div className="space-y-2">
                     <h2 className="text-3xl font-black text-slate-800 dark:text-white">مرحباً بك في DZ LAW AI</h2>
                     <p className="text-slate-500 dark:text-slate-400 max-w-md mx-auto text-lg">
-                        رفيقك الذكي لاستيعاب الدروس، حل القضايا، والبحث في النصوص القانونية الجزائرية.
+                        مساعدك الأكاديمي السريع (النموذج المجاني) المتخصص في مناهج كليات الحقوق والتشريع المدرسي والجامعي وقوانين التربية بالجزائر.
                     </p>
                 </div>
                 
@@ -226,8 +226,8 @@ const AIAssistant: React.FC = () => {
             <div className="relative flex items-end gap-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 rounded-3xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
                 
                 {/* Tool Button (Placeholder for future features) */}
-                <button className="p-3 text-slate-400 hover:text-primary hover:bg-white dark:hover:bg-slate-800 rounded-full transition flex-shrink-0" title="إرفاق ملف (قريباً)">
-                    <Eraser className="w-5 h-5" />
+                <button className="p-3 text-slate-400 hover:text-primary hover:bg-white dark:hover:bg-slate-800 rounded-full transition flex-shrink-0" title="إرفاق ملف (قريباً)" aria-label="إرفاق ملف">
+                    <Paperclip className="w-5 h-5" />
                 </button>
                 
                 <textarea
@@ -258,7 +258,7 @@ const AIAssistant: React.FC = () => {
                 </button>
             </div>
             <p className="text-center text-[10px] text-slate-400 mt-3 font-medium">
-                 DZ LAW HUB AI يمكن أن يرتكب أخطاء. يرجى مراجعة المعلومات المهمة.
+                 DZLAW HUB AI يمكن أن يرتكب أخطاء. يرجى مراجعة المعلومات المهمة.
             </p>
         </div>
       </div>

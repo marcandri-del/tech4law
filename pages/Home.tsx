@@ -18,20 +18,13 @@ const Home: React.FC = () => {
 
         <div className="container mx-auto flex flex-col items-center relative z-10">
           <div className="max-w-4xl text-center">
-            <div className="inline-flex items-center gap-2 bg-indigo-50/80 dark:bg-indigo-900/50 backdrop-blur-sm text-primary dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 px-4 py-2 rounded-full text-sm font-bold mb-8 shadow-sm">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                </span>
-                المنصة الأولى لطلبة الحقوق في الجزائر
-            </div>
             <h1 className="text-4xl lg:text-6xl font-black text-slate-900 dark:text-white mb-6 leading-relaxed lg:leading-normal">
               تفوّق في دراستك <br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent px-2">القانونية</span>
             </h1>
-            <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed max-w-2xl mx-auto backdrop-blur-sm p-2 rounded-xl">
+            <p className="text-lg text-slate-900 dark:text-slate-100 mb-8 leading-relaxed max-w-2xl mx-auto backdrop-blur-sm p-2 rounded-xl">
               دروس مبسطة، تمارين تفاعلية، ومساعد ذكي يجيب على كل تساؤلاتك. 
-              DZ LAW HUB هو رفيقك من السنة الأولى حتى التخرج.
+              DZLAW HUB هو رفيقك من السنة الأولى حتى التخرج.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
               <Link to="/lessons" className="bg-primary hover:bg-primary-light text-white font-bold py-3 px-8 rounded-xl shadow-xl shadow-primary/20 transition transform hover:-translate-y-1 flex items-center justify-center gap-2 text-base">

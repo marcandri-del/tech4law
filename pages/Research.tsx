@@ -7,8 +7,16 @@ type Mode = 'suggest' | 'correct' | 'analyze';
 
 const Research: React.FC = () => {
   const [mode, setMode] = useState<Mode>('suggest');
+  const [searchQuery, setSearchQuery] = useState('');
   const [planOutput, setPlanOutput] = useState<{id: string, text: string} | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Filter topics in real-time as the user types
+  const filteredTopics = RESEARCH_TOPICS.filter(topic => 
+    topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    topic.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    topic.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Correction State
   const [correctionTitle, setCorrectionTitle] = useState('');
@@ -107,53 +115,66 @@ const Research: React.FC = () => {
           /* Suggestion Mode */
           <div className="space-y-8 animate-fade-in-up">
              <div className="relative max-w-md">
-                 <input type="text" placeholder="بحث عن موضوع..." className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-full px-4 py-3 pl-10 text-sm focus:ring-2 focus:ring-primary/50 outline-none" />
+                 <input 
+                    type="text" 
+                    placeholder="بحث عن موضوع..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-full px-4 py-3 pl-10 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary/50 outline-none" 
+                 />
                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {RESEARCH_TOPICS.map((topic) => (
-                <div key={topic.id} className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col hover:border-primary transition duration-300 group">
-                    <div className="p-6 flex-1">
-                    <div className="flex items-center gap-2 mb-4">
-                        <span className="bg-indigo-50 dark:bg-indigo-900/30 text-primary text-[10px] font-bold uppercase px-2 py-1 rounded tracking-wider">{topic.category}</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-secondary dark:text-white mb-3 leading-snug group-hover:text-primary transition-colors">{topic.title}</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">{topic.description}</p>
-                    </div>
-                    
-                    <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/30 rounded-b-2xl">
-                    {planOutput?.id === topic.id ? (
-                        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-sm animate-fade-in">
-                            <h4 className="font-bold mb-3 flex items-center gap-2 text-secondary dark:text-white border-b border-slate-100 pb-2">
-                                <FileText className="w-4 h-4 text-primary" />
-                                الخطة المقترحة
-                            </h4>
-                            {loading ? (
-                                <div className="space-y-2 py-4">
-                                    <div className="h-2 bg-slate-200 rounded w-full animate-pulse"></div>
-                                    <div className="h-2 bg-slate-200 rounded w-2/3 animate-pulse"></div>
-                                    <div className="h-2 bg-slate-200 rounded w-3/4 animate-pulse"></div>
-                                </div>
-                            ) : (
-                                <div className="whitespace-pre-wrap font-sans text-xs text-slate-600 dark:text-slate-300 max-h-60 overflow-y-auto leading-loose custom-scrollbar">
-                                    {planOutput.text}
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <button 
-                            onClick={() => handleSuggestPlan(topic.id, topic.title)}
-                            className="w-full text-secondary dark:text-white hover:text-primary dark:hover:text-primary py-2 rounded text-sm font-bold flex items-center justify-center gap-2 transition group"
-                        >
-                            <Lightbulb className="w-4 h-4 text-slate-400 group-hover:text-primary" />
-                            إنشاء خطة بحث
-                        </button>
-                    )}
-                    </div>
-                </div>
-                ))}
-            </div>
+            {filteredTopics.length === 0 ? (
+              <div className="text-center py-12 text-slate-500">
+                <p className="text-lg font-bold">لا توجد مواضيع تطابق بحثك.</p>
+                <p className="text-sm">جرب البحث بكلمات مفتاحية أخرى مثل "قانون الجنايات" أو "الدستور".</p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredTopics.map((topic) => (
+                  <div key={topic.id} className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col hover:border-primary transition duration-300 group">
+                      <div className="p-6 flex-1">
+                      <div className="flex items-center gap-2 mb-4">
+                          <span className="bg-indigo-50 dark:bg-indigo-900/30 text-primary text-[10px] font-bold uppercase px-2 py-1 rounded tracking-wider">{topic.category}</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-secondary dark:text-white mb-3 leading-snug group-hover:text-primary transition-colors">{topic.title}</h3>
+                      <p className="text-slate-500 text-sm leading-relaxed">{topic.description}</p>
+                      </div>
+                      
+                      <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/30 rounded-b-2xl">
+                      {planOutput?.id === topic.id ? (
+                          <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-sm animate-fade-in">
+                              <h4 className="font-bold mb-3 flex items-center gap-2 text-secondary dark:text-white border-b border-slate-100 pb-2">
+                                  <FileText className="w-4 h-4 text-primary" />
+                                  الخطة المقترحة
+                              </h4>
+                              {loading ? (
+                                  <div className="space-y-2 py-4">
+                                      <div className="h-2 bg-slate-200 rounded w-full animate-pulse"></div>
+                                      <div className="h-2 bg-slate-200 rounded w-2/3 animate-pulse"></div>
+                                      <div className="h-2 bg-slate-200 rounded w-3/4 animate-pulse"></div>
+                                  </div>
+                              ) : (
+                                  <div className="whitespace-pre-wrap font-sans text-xs text-slate-600 dark:text-slate-300 max-h-60 overflow-y-auto leading-loose custom-scrollbar">
+                                      {planOutput.text}
+                                  </div>
+                              )}
+                          </div>
+                      ) : (
+                          <button 
+                              onClick={() => handleSuggestPlan(topic.id, topic.title)}
+                              className="w-full text-secondary dark:text-white hover:text-primary dark:hover:text-primary py-2 rounded text-sm font-bold flex items-center justify-center gap-2 transition group"
+                          >
+                              <Lightbulb className="w-4 h-4 text-slate-400 group-hover:text-primary" />
+                              إنشاء خطة بحث
+                          </button>
+                      )}
+                      </div>
+                  </div>
+                  ))}
+              </div>
+            )}
           </div>
       )}
       

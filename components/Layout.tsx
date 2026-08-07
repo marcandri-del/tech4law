@@ -22,10 +22,6 @@ const Layout: React.FC<LayoutProps> = ({ children, toggleTheme, isDark }) => {
     navigate('/');
   };
 
-  const isActive = (path: string) => location.pathname === path 
-    ? 'text-primary bg-primary/5 dark:bg-primary/20 font-bold' 
-    : 'text-slate-600 dark:text-slate-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800 transition-all';
-
   return (
     <div className="min-h-screen flex flex-col font-sans bg-surface dark:bg-slate-950 relative overflow-hidden">
       <BackgroundShapes />
@@ -54,36 +50,27 @@ const Layout: React.FC<LayoutProps> = ({ children, toggleTheme, isDark }) => {
                   المساعد الذكي
                </Link>
                
-               {user ? (
-                 <>
-                   <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 font-bold text-sm px-3 py-2 rounded-xl">
-                     <User className="w-4 h-4" />
-                     {user.name}
-                   </div>
-                   <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-600 font-bold text-sm px-3 py-2 rounded-xl transition">
-                     <LogOut className="w-4 h-4" />
-                     خروج
-                   </button>
-                 </>
-               ) : (
-                 <Link to="/" className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary font-bold text-sm px-3 py-2 rounded-xl transition">
-                    <LogIn className="w-4 h-4" />
-                    دخول
-                 </Link>
-               )}
+               <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 font-bold text-sm px-3 py-2 rounded-xl">
+                 <User className="w-4 h-4" />
+                 {user?.name}
+               </div>
+               <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-600 font-bold text-sm px-3 py-2 rounded-xl transition">
+                 <LogOut className="w-4 h-4" />
+                 خروج
+               </button>
 
-               <Link to="/dashboard" className="p-2.5 text-slate-500 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">
+               <Link to="/dashboard" aria-label="لوحة التحكم" className="p-2.5 text-slate-500 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">
                   <LayoutDashboard className="w-5 h-5" />
                </Link>
 
-              <button onClick={toggleTheme} className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-500 hover:text-yellow-500">
+              <button onClick={toggleTheme} aria-label="تغيير المظهر" className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition text-slate-500 hover:text-yellow-500">
                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-2">
-              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+              <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="القائمة الرئيسية" className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
                 {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
@@ -102,20 +89,14 @@ const Layout: React.FC<LayoutProps> = ({ children, toggleTheme, isDark }) => {
             <MobileLink to="/dashboard" icon={<LayoutDashboard/>} label="لوحة التحكم" onClick={() => setIsMenuOpen(false)} />
             
             <div className="border-t dark:border-slate-800 pt-2 mt-2">
-                {user ? (
-                  <>
-                    <div className="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-300 font-bold">
-                      <User className="w-5 h-5" />
-                      <span>{user.name}</span>
-                    </div>
-                    <button onClick={() => { handleLogout(); setIsMenuOpen(false); }} className="flex items-center gap-3 p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition font-bold w-full text-right">
-                      <LogOut className="w-5 h-5" />
-                      <span>تسجيل الخروج</span>
-                    </button>
-                  </>
-                ) : (
-                  <MobileLink to="/" icon={<LogIn/>} label="تسجيل الدخول" onClick={() => setIsMenuOpen(false)} />
-                )}
+                <div className="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-300 font-bold">
+                  <User className="w-5 h-5" />
+                  <span>{user?.name}</span>
+                </div>
+                <button onClick={() => { handleLogout(); setIsMenuOpen(false); }} className="flex items-center gap-3 p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition font-bold w-full text-right">
+                  <LogOut className="w-5 h-5" />
+                  <span>تسجيل الخروج</span>
+                </button>
                 <button onClick={toggleTheme} className="flex items-center gap-3 p-3 w-full text-slate-600 dark:text-slate-300">
                     {isDark ? <Sun className="w-5 h-5"/> : <Moon className="w-5 h-5"/>}
                     <span>تغيير المظهر</span>
@@ -147,7 +128,7 @@ const Layout: React.FC<LayoutProps> = ({ children, toggleTheme, isDark }) => {
              </div>
           </div>
           <div className="text-center text-slate-400 text-sm">
-            <p>© {new Date().getFullYear()} DZ LAW HUB.</p>
+            <p>© {new Date().getFullYear()} DZLAW HUB.</p>
           </div>
         </div>
       </footer>

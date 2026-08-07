@@ -1,10 +1,60 @@
-import React from 'react';
-import { Check, X, Crown, Shield, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Check, X, Crown, Shield, Zap, CreditCard, Send, Sparkles, Building, ChevronRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 const Pricing: React.FC = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  // Checkout Modal State
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [ccpNumber, setCcpNumber] = useState('');
+  const [transactionRef, setTransactionRef] = useState('');
+  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleCheckoutSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ccpNumber.trim() || !transactionRef.trim() || !paymentDate) {
+      setError('يرجى ملء كافة تفاصيل الدفع.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    try {
+      await addDoc(collection(db, 'subscriptions'), {
+        userId: user?.uid || 'guest',
+        userEmail: user?.email || '',
+        userName: user?.name || '',
+        plan: 'Student Pro',
+        ccpNumber: ccpNumber.trim(),
+        transactionRef: transactionRef.trim(),
+        paymentDate: paymentDate,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      });
+      setSuccess(true);
+    } catch (err: any) {
+      console.error('Error saving subscription transaction:', err);
+      setError('حدث خطأ أثناء معالجة طلبك. يرجى المحاولة لاحقاً.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleProfessionalContact = () => {
+    navigate('/contact?subject=طلب الباقة المهنية (Professional)');
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-20 relative">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -47,7 +97,7 @@ const Pricing: React.FC = () => {
 
           {/* Student Pro Plan */}
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border-2 border-primary relative flex flex-col shadow-2xl shadow-primary/10 transform md:-translate-y-4">
-            <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-primary to-purple-600 text-white px-4 py-1 rounded-full text-xs font-bold whitespace-nowrap">
+            <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-primary to-purple-600 text-white px-4 py-1 rounded-full text-xs font-bold whitespace-nowrap animate-pulse">
                 الأكثر طلباً
             </div>
             <div className="mb-6">
@@ -69,7 +119,10 @@ const Pricing: React.FC = () => {
                <FeatureItem text="تحميل الملخصات PDF" included={true} />
                <FeatureItem text="دعم فني خاص" included={false} />
             </ul>
-            <button className="w-full bg-primary hover:bg-primary-light text-white font-bold py-4 rounded-xl transition shadow-lg shadow-primary/25">
+            <button 
+              onClick={() => navigate('/contact?plan=student-pro')}
+              className="w-full bg-primary hover:bg-primary-light text-white font-bold py-4 rounded-xl transition shadow-lg shadow-primary/25 cursor-pointer"
+            >
                 اشترك الآن
             </button>
           </div>
@@ -95,7 +148,10 @@ const Pricing: React.FC = () => {
                <FeatureItem text="أولوية في الدعم الفني" included={true} />
                <FeatureItem text="شارات توثيق في المجتمع" included={true} />
             </ul>
-            <button className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 text-white font-bold py-4 rounded-xl transition">
+            <button 
+              onClick={() => navigate('/contact?plan=professional')}
+              className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 text-white font-bold py-4 rounded-xl transition cursor-pointer"
+            >
                 تواصل معنا
             </button>
           </div>
@@ -107,6 +163,138 @@ const Pricing: React.FC = () => {
             <Link to="/contact" className="text-primary font-bold hover:underline">تحدث مع فريق المبيعات</Link>
         </div>
       </div>
+
+      {/* Subscription Modal / Algerian Checkout */}
+      {showCheckout && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-scaleIn">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-primary to-indigo-600 text-white p-6 relative">
+              <button 
+                onClick={() => setShowCheckout(false)} 
+                className="absolute left-6 top-6 text-white/80 hover:text-white transition"
+                aria-label="إغلاق النافذة"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <div className="flex items-center gap-3 mb-2">
+                <Sparkles className="w-6 h-6" />
+                <h3 className="text-xl font-black">ترقية إلى الطالب المميز</h3>
+              </div>
+              <p className="text-white/80 text-sm">استمتع بمساعد ذكي غير محدود وكل دروس ليسانس الحقوق الجزائرية.</p>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-8">
+              {success ? (
+                <div className="text-center py-8 animate-fadeIn">
+                  <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Check className="w-10 h-10" />
+                  </div>
+                  <h4 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">تم إرسال طلب الاشتراك!</h4>
+                  <p className="text-slate-600 dark:text-slate-400 max-w-sm mx-auto mb-8">
+                    تم تسجيل عملية الدفع بنجاح. سيقوم فريق الإشراف بالتحقق من بيانات الدفع (حساب CCP / البريد الجزائري) وتفعيل باقتك المميزة في غضون 24 ساعة.
+                  </p>
+                  <button 
+                    onClick={() => setShowCheckout(false)}
+                    className="bg-primary hover:bg-primary-light text-white font-bold py-3 px-8 rounded-xl transition"
+                  >
+                    حسناً، فهمت
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleCheckoutSubmit} className="space-y-6">
+                  {/* Bank Transfer Details Section */}
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 mb-6">
+                    <div className="flex items-center gap-2 text-primary font-bold mb-3">
+                      <Building className="w-5 h-5" />
+                      <span>بيانات تحويل البريد الجزائري (CCP):</span>
+                    </div>
+                    <div className="space-y-1.5 text-sm text-slate-700 dark:text-slate-300">
+                      <p>الحساب الجاري: <strong className="font-bold text-slate-900 dark:text-white">0023456789</strong> المفتاح: <strong className="font-bold text-slate-900 dark:text-white">45</strong></p>
+                      <p>باسم: <strong className="font-bold text-slate-900 dark:text-white">DZLAW HUB EDITIONS</strong></p>
+                      <p>المبلغ المستحق: <strong className="font-bold text-primary">1500 دج</strong></p>
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="p-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 rounded-xl text-sm font-bold border border-red-200 dark:border-red-800">
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="ccp-number" className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">رقم حسابك الجاري CCP (أو بريديموب)</label>
+                      <input 
+                        id="ccp-number"
+                        type="text" 
+                        value={ccpNumber}
+                        onChange={(e) => setCcpNumber(e.target.value)}
+                        placeholder="أدخل الحساب الذي قمت بالتحويل منه"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="payment-ref" className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">رقم الحوالة أو الرقم المرجعي للمعاملة (Référence)</label>
+                      <input 
+                        id="payment-ref"
+                        type="text" 
+                        value={transactionRef}
+                        onChange={(e) => setTransactionRef(e.target.value)}
+                        placeholder="مثال: TXN-9823418"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="payment-date" className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">تاريخ العملية</label>
+                      <input 
+                        id="payment-date"
+                        type="date" 
+                        value={paymentDate}
+                        onChange={(e) => setPaymentDate(e.target.value)}
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <button 
+                      type="button" 
+                      onClick={() => setShowCheckout(false)}
+                      className="w-1/3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-white font-bold py-3.5 rounded-xl transition"
+                    >
+                      إلغاء
+                    </button>
+                    <button 
+                      type="submit" 
+                      disabled={loading}
+                      className="w-2/3 bg-primary hover:bg-primary-light text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                    >
+                      {loading ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          <span>جاري التحقق...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>تأكيد طلب الاشتراك</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
